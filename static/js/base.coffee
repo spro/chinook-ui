@@ -5,27 +5,17 @@ somata = require './somata-socketio'
 
 cx = React.addons.classSet
 
-merge = (o1, o2) -> _.extend {}, o1, o2
+doGetRoutes = ->
+    somata.remote 'chinook', 'getRoutes', (err, routes) ->
+        console.log '[doGetRoutes]', routes
+        AppDispatcher.routes = routes
+        AppDispatcher.loading = false
+        AppDispatcher.updates.plug(Kefir.constant(true))
+doGetRoutes()
 
-bools = (o) ->
-    b = {}
-    for k, v of o
-        console.log 'k=',k,'v=',v
-        if _.isBoolean v
-            b[k] = v
-    return b
-
-default_routes = [
-    {domain: 'chinook.dev', ips: ['127.0.0.1:2889']}
-    {domain: 'debatable.staging', ips: ['128.0.0.1:5952', '128.0.0.1:4222']}
-    {domain: 'maia.dev', ips: ['192.168.42.115:10101']}
-    {domain: 'gofish.dev', ips: ['128.0.0.1:5952']}
-    {domain: 'nexus.dev', ips: ['192.168.42.115:4510']}
-]
-
-doOp = (v) ->
-    Kefir.stream (emitter) ->
-        emitter.emit v
+doAddRoute = (domain, ip) ->
+    somata.remote 'chinook', 'addRoute', domain, ip, ->
+        doGetRoutes()
 
 # Helper classes
 # -----------------------------------------------------------------------------
@@ -58,8 +48,8 @@ StateHelpers =
 # TODO: Break into Store + Dispatcher
 
 AppDispatcher =
-    mode: 'search' # search / browse
-    routes: default_routes
+    loading: true
+    routes: []
 
     updates: Kefir.pool()
 
@@ -78,6 +68,8 @@ AppDispatcher =
         AppDispatcher.routes = AppDispatcher.routes.filter (r) -> r.domain != route.domain
 
     addIP: (domain, ip) ->
+        doAddRoute domain, ip
+        return
         route = AppDispatcher.routes.filter((r) -> r.domain == domain)[0]
         if route
             route.ips.push ip
@@ -171,6 +163,7 @@ NewIP = React.createClass
 
 Card = React.createClass
     getInitialState: ->
+        loading: AppDispatcher.loading
         routes: AppDispatcher.routes
 
     componentDidMount: ->
@@ -178,6 +171,9 @@ Card = React.createClass
             @setState @getInitialState()
 
     render: ->
+        if @state.loading
+            return <div className='loading'>Loading...</div>
+
         <div className='card'>
             {@state.routes.map (r) -> <Route route={r} key={r.domain} />}
             <NewRoute />
