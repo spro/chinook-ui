@@ -130,7 +130,10 @@ NewRoute = React.createClass
         ip: ''
 
     onEnter: ->
-        AppDispatcher.addIP @state.domain, @state.ip
+        {domain, ip} = @state
+        if matched = ip.match /^:(\d+)/
+            ip = '127.0.0.1:' + matched[1]
+        AppDispatcher.addIP domain, ip
         @resetState()
         @focusDomain()
 
