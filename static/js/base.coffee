@@ -5,17 +5,21 @@ somata = require './somata-socketio'
 
 cx = React.addons.classSet
 
-doGetRoutes = ->
-    somata.remote 'chinook', 'getRoutes', (err, routes) ->
-        console.log '[doGetRoutes]', routes
+doLoadRoutes = ->
+    somata.remote 'chinook', 'findRoutes', (err, routes) ->
+        console.log '[doLoadRoutes]', routes
         AppDispatcher.routes = routes
         AppDispatcher.loading = false
         AppDispatcher.updates.plug(Kefir.constant(true))
-doGetRoutes()
+doLoadRoutes()
 
 doAddRoute = (domain, ip) ->
     somata.remote 'chinook', 'addRoute', domain, ip, ->
-        doGetRoutes()
+        doLoadRoutes()
+
+doRemoveRoute = (domain, ip) ->
+    somata.remote 'chinook', 'removeRoute', domain, ip, ->
+        doLoadRoutes()
 
 # Helper classes
 # -----------------------------------------------------------------------------
@@ -68,8 +72,7 @@ AppDispatcher =
         AppDispatcher.routes = AppDispatcher.routes.filter (r) -> r.domain != route.domain
 
     addIP: (domain, ip) ->
-        doAddRoute domain, ip
-        return
+        return doAddRoute domain, ip
         route = AppDispatcher.routes.filter((r) -> r.domain == domain)[0]
         if route
             route.ips.push ip
@@ -79,6 +82,7 @@ AppDispatcher =
         AppDispatcher.updates.plug(Kefir.constant(true))
 
     removeIP: (domain, ip) ->
+        return doRemoveRoute domain, ip
         route = AppDispatcher.routes.filter((r) -> r.domain == domain)[0]
         route.ips = route.ips.filter (i) -> i != ip
         if route.ips.length == 0
