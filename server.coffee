@@ -3,11 +3,7 @@ somata = require 'somata'
 
 client = new somata.Client
 
-app = polar.setup_app
-    port: 2889
-    metaserve: compilers:
-        css: require('metaserve-css-styl')()
-        js: require('metaserve-js-coffee-reactify')(ext: 'coffee')
+app = polar port: 2889
 
 app.get '/', (req, res) -> res.render 'base'
 
