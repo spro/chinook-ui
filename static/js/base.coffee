@@ -189,7 +189,7 @@ Card = React.createClass
 App = React.createClass
     render: ->
         <div>
-            <p>Logged in as {user.email}. <a href="/logout">Log out</a></p>
+            <div id='header'>Logged in as {user.email}. <a href="/logout">Log out</a></div>
             <img id='logo' src='/img/chinook.png' />
             <Card />
         </div>

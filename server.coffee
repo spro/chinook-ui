@@ -12,9 +12,8 @@ config.checkUser = (query, cb) ->
     client.remote 'chinook', 'checkUser', query, cb
 
 auth = polar_auth(config)
-app_config = config.app
-app_config.middleware = [auth.session_middleware]
-app = polar app_config
+config.app.middleware = [auth.session_middleware]
+app = polar config.app
 
 app.get '/', auth.requireLogin, (req, res) -> res.render 'base'
 app.get '/login', auth.showLogin
