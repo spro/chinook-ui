@@ -1,0 +1,121 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f4f4f4;
+  font: 14px/20px "Helvetica Neue", Helvetica, arial, sans-serif;
+}
+
+#header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 15px;
+  background: rgba(187, 187, 187, 0.2);
+}
+
+#header a {
+  color: inherit;
+}
+
+.loading {
+  text-align: center;
+  color: #bbb;
+}
+
+.card {
+  max-width: 400px;
+  margin: 0 auto 50px;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+input {
+  width: 100%;
+  outline: none;
+  border: none;
+  -webkit-appearance: none;
+  font: inherit;
+  border-bottom: 1px solid #eee;
+}
+
+input:focus {
+  border-bottom-color: #bbb;
+}
+
+::-webkit-input-placeholder {
+  color: #bbb;
+}
+
+#logo {
+  display: block;
+  margin: 20px auto 0;
+  max-width: 400px;
+}
+
+.actions {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+.actions .icon:hover {
+  opacity: 1;
+}
+
+.actions .icon {
+  cursor: pointer;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  padding: 5px;
+  opacity: 0.3;
+}
+
+div:hover > .actions {
+  display: block;
+}
+
+.route {
+  position: relative;
+}
+
+.route > .actions {
+  right: 54%;
+}
+
+.route+.route {
+  margin-top: 15px;
+}
+
+.route .domain,
+.route .ips {
+  display: inline-block;
+  width: 46%;
+  vertical-align: top;
+}
+
+.route .domain {
+  padding: 3px 0;
+  margin-right: 6%;
+  font-weight: bold;
+  position: relative;
+}
+
+.route .ip+.ip {
+  margin-top: 15px;
+}
+
+.route .ip {
+  padding: 3px 0;
+  position: relative;
+  display: block;
+  color: #777;
+}
