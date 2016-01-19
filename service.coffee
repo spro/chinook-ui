@@ -32,24 +32,23 @@ removeRoute = (domain, ip) ->
     Kefir.fromNodeCallback (cb) ->
         redis.srem 'backends:' + domain, ip, cb
 
-getUser = (query) ->
+findUser = (query) ->
     user_id$ = Kefir.fromNodeCallback (cb) ->
         redis.get 'logins:' + query.email + '::' + query.password, cb
     user_id$.flatMap (user_id) ->
-        if user_id then checkUser user_id
+        if user_id then getUser user_id
         else Kefir.constant(null)
 
-checkUser = (user_id) ->
+getUser = (user_id) ->
     Kefir.fromNodeCallback (cb) ->
         redis.get 'users:' + user_id, (err, user_json) ->
-            console.log 'result is', user_json
             cb err, JSON.parse user_json
 
 StreamService 'chinook', {
     findRoutes
     addRoute
     removeRoute
+    findUser
     getUser
-    checkUser
 }
 

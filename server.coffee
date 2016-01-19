@@ -5,13 +5,13 @@ config = require './config'
 
 client = new somata.Client
 
-config.getUser = (query, cb) ->
-    client.remote 'chinook', 'getUser', query, cb
+findUser = (query, cb) ->
+    client.remote 'chinook', 'findUser', query, cb
 
-config.checkUser = (query, cb) ->
-    client.remote 'chinook', 'checkUser', query, cb
+getUser = (user_id, cb) ->
+    client.remote 'chinook', 'getUser', user_id, cb
 
-auth = polar_auth(config)
+auth = polar_auth config.auth, {findUser, getUser, id_key: 'id'}
 config.app.middleware = [auth.session_middleware]
 app = polar config.app
 
