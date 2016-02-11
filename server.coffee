@@ -5,9 +5,11 @@ config = require './config'
 
 client = new somata.Client
 
-DataService = client.bindRemoteMethods 'chinook'
+DataService = client.bindRemote 'chinook'
 
-auth = polar_auth config.auth, {DataService, id_key: 'id'}
+auth = polar_auth config.auth,
+    id_key: 'id'
+    getUser: (user_query, cb) -> DataService 'getUser', user_query, cb
 config.app.middleware = [auth.jwt_middleware]
 app = polar config.app
 
